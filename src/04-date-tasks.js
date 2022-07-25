@@ -53,9 +53,19 @@ function parseDataFromIso8601(value) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  // return Date.getFullYear(date);
-  throw new Error('Not implemented');
+function isLeapYear(data) {
+  const date = new Date(data);
+  if (date.getFullYear() % 4 !== 0) {
+    return false;
+  }
+  if (date.getFullYear() % 100 !== 0) {
+    return true;
+  }
+  if (date.getFullYear() % 400 !== 0) {
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -74,8 +84,16 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const date = new Date(endDate - startDate);
+  const hours = date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : `${date.getUTCHours()}`;
+  const minutes = date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : `${date.getUTCMinutes()}`;
+  const seconds = date.getUTCSeconds() < 10 ? `0${date.getUTCSeconds()}` : `${date.getUTCSeconds()}`;
+  let milliseconds = date.getUTCMilliseconds();
+  if (milliseconds < 10) milliseconds = `00${date.getUTCMilliseconds()}`;
+  if (milliseconds >= 10 && milliseconds < 100) milliseconds = `0${date.getUTCMilliseconds()}`;
+  if (milliseconds >= 100) milliseconds = `${date.getUTCMilliseconds()}`;
+  return `${hours}:${minutes}:${seconds}.${milliseconds}`;
 }
 
 
@@ -95,8 +113,13 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  let hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  hours = hours > 12 ? hours - 12 : hours;
+  let angle = Math.abs(0.5 * (60 * hours - 11 * minutes));
+  angle = angle > 180 ? 360 - angle : angle;
+  return (angle * Math.PI) / 180;
 }
 
 
